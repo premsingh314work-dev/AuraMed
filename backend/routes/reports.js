@@ -58,8 +58,8 @@ router.post(
   "/upload",
   auth,
   uploadLimiter,
-  uploadSingleReport,
   uploadUsageLimiter,
+  uploadSingleReport,
   async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded." });
