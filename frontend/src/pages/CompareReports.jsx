@@ -16,15 +16,16 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-
+import API_BASE_URL from "../config/api";
 import { useAuth } from "../context/AuthContext";
 import {
   getCachedComparison,
   saveCachedComparison,
 } from "../lib/comparisonCache";
 
-const API_URL = "http://localhost:5000/api/reports/compare";
-const SUMMARY_API_URL = "http://localhost:5000/api/reports/compare/summary";
+const API_URL = `${API_BASE_URL}/api/reports/compare`;
+const SUMMARY_API_URL = `${API_BASE_URL}/api/reports/compare/summary`;
+
 const MAX_REPORTS = 3;
 
 const normalizeName = (name = "") =>

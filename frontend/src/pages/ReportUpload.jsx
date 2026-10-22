@@ -1,29 +1,31 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { 
-  Upload, 
-  FileText, 
-  User, 
-  Calendar, 
-  X, 
-  Loader2, 
+import API_BASE_URL from "../config/api";
+import {
+  Upload,
+  FileText,
+  User,
+  Calendar,
+  X,
+  Loader2,
   ArrowLeft,
   Search,
   Cpu,
   BrainCircuit,
-  MessageSquareHeart
+  MessageSquareHeart,
 } from "lucide-react";
-
-const API_URL = "http://localhost:5000/api/reports/upload";
+const API_URL = `${API_BASE_URL}/api/reports/upload`;
 
 const ReportUpload = () => {
   const navigate = useNavigate();
-  
+
   // Form states
   const [file, setFile] = useState(null);
   const [patientName, setPatientName] = useState("");
-  const [reportDate, setReportDate] = useState(new Date().toISOString().split("T")[0]);
+  const [reportDate, setReportDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
   const [dragActive, setDragActive] = useState(false);
 
   // Status states
@@ -36,7 +38,10 @@ const ReportUpload = () => {
     { label: "Performing text extraction (OCR)", icon: Search },
     { label: "Analyzing parameters via GROQ AI", icon: Cpu },
     { label: "Structuring normal/abnormal ranges", icon: BrainCircuit },
-    { label: "Generating patient-friendly summaries", icon: MessageSquareHeart }
+    {
+      label: "Generating patient-friendly summaries",
+      icon: MessageSquareHeart,
+    },
   ];
 
   const handleDrag = (e) => {
@@ -99,7 +104,7 @@ const ReportUpload = () => {
     setIsProcessing(true);
     setCurrentStep(0);
     setError(null);
-    
+
     const progressInterval = runProcessingMock();
 
     const formData = new FormData();
@@ -109,31 +114,29 @@ const ReportUpload = () => {
 
     try {
       const res = await axios.post(API_URL, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
       clearInterval(progressInterval);
       setCurrentStep(steps.length - 1);
-      
+
       // Delay navigation slightly so they see the completed progress
       setTimeout(() => {
         navigate(`/reports/${res.data._id}`);
       }, 800);
-
     } catch (err) {
       clearInterval(progressInterval);
       setIsProcessing(false);
       console.error(err);
       setError(
-        err.response?.data?.detail || 
-        err.response?.data?.message || 
-        "An error occurred during extraction. Make sure both Express and Python servers are running."
+        err.response?.data?.detail ||
+          err.response?.data?.message ||
+          "An error occurred during extraction. Make sure both Express and Python servers are running.",
       );
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fadeIn pb-12">
-      
       {/* Back button */}
       <div>
         <button
@@ -147,7 +150,10 @@ const ReportUpload = () => {
 
       <div>
         <h1 className="text-3xl font-bold text-white">Upload Medical Report</h1>
-        <p className="text-sm text-slate-400">PDFs and images will be analyzed automatically to explain values in simple language</p>
+        <p className="text-sm text-slate-400">
+          PDFs and images will be analyzed automatically to explain values in
+          simple language
+        </p>
       </div>
 
       {error && (
@@ -160,15 +166,14 @@ const ReportUpload = () => {
       {!isProcessing ? (
         <div className="glass-card rounded-3xl border border-slate-800/60 p-8 shadow-2xl">
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             {/* File Drag and Drop Zone */}
             <div
               className={`relative border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
-                dragActive 
-                  ? "border-cyan-400 bg-cyan-950/10 shadow-[0_0_20px_rgba(6,182,212,0.05)]" 
-                  : file 
-                  ? "border-slate-700 bg-slate-900/20" 
-                  : "border-slate-800 hover:border-slate-700 bg-slate-950/20"
+                dragActive
+                  ? "border-cyan-400 bg-cyan-950/10 shadow-[0_0_20px_rgba(6,182,212,0.05)]"
+                  : file
+                    ? "border-slate-700 bg-slate-900/20"
+                    : "border-slate-800 hover:border-slate-700 bg-slate-950/20"
               }`}
               onDragEnter={handleDrag}
               onDragOver={handleDrag}
@@ -190,8 +195,12 @@ const ReportUpload = () => {
                     <FileText className="h-6 w-6" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-200">{file.name}</p>
-                    <p className="text-xs text-slate-500">{(file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p className="text-sm font-semibold text-slate-200">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
                   </div>
                   <button
                     type="button"
@@ -212,9 +221,14 @@ const ReportUpload = () => {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-300">
-                      Drag & drop your file here, or <span className="text-cyan-400 hover:underline">browse</span>
+                      Drag & drop your file here, or{" "}
+                      <span className="text-cyan-400 hover:underline">
+                        browse
+                      </span>
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">Supports PDF, PNG, JPG, or JPEG up to 10MB</p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Supports PDF, PNG, JPG, or JPEG up to 10MB
+                    </p>
                   </div>
                 </div>
               )}
@@ -260,8 +274,14 @@ const ReportUpload = () => {
 
             {/* Disclaimer */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] leading-relaxed text-slate-500">
-              <strong className="text-slate-400 block mb-1">Educational Disclaimer:</strong>
-              This application utilizes artificial intelligence models to parse and translate clinical metrics into simple terms. It does not provide medical diagnostics, medical opinions, or professional treatment advice. Always review lab results directly with a qualified healthcare physician.
+              <strong className="text-slate-400 block mb-1">
+                Educational Disclaimer:
+              </strong>
+              This application utilizes artificial intelligence models to parse
+              and translate clinical metrics into simple terms. It does not
+              provide medical diagnostics, medical opinions, or professional
+              treatment advice. Always review lab results directly with a
+              qualified healthcare physician.
             </div>
 
             <button
@@ -271,7 +291,6 @@ const ReportUpload = () => {
             >
               Analyze Report
             </button>
-
           </form>
         </div>
       ) : (
@@ -283,10 +302,15 @@ const ReportUpload = () => {
               <Cpu className="h-6 w-6 text-cyan-400 animate-pulse" />
             </div>
           </div>
-          
+
           <div className="text-center">
-            <h3 className="text-lg font-bold text-slate-200">Processing Your Lab Sheet</h3>
-            <p className="text-xs text-slate-500 mt-1">This will take roughly 5-15 seconds. Please do not close this window.</p>
+            <h3 className="text-lg font-bold text-slate-200">
+              Processing Your Lab Sheet
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              This will take roughly 5-15 seconds. Please do not close this
+              window.
+            </p>
           </div>
 
           <div className="w-full max-w-md space-y-3">
@@ -295,23 +319,25 @@ const ReportUpload = () => {
               const isDone = idx < currentStep;
               const isActive = idx === currentStep;
               return (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className={`flex items-center gap-3.5 px-4 py-3 rounded-xl border transition-all duration-300 ${
-                    isDone 
-                      ? "border-emerald-500/10 bg-emerald-950/5 text-emerald-400" 
-                      : isActive 
-                      ? "border-cyan-500/20 bg-cyan-950/10 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.05)]" 
-                      : "border-transparent text-slate-600"
+                    isDone
+                      ? "border-emerald-500/10 bg-emerald-950/5 text-emerald-400"
+                      : isActive
+                        ? "border-cyan-500/20 bg-cyan-950/10 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.05)]"
+                        : "border-transparent text-slate-600"
                   }`}
                 >
-                  <div className={`flex h-6 w-6 items-center justify-center rounded-lg border text-xs font-semibold ${
-                    isDone 
-                      ? "border-emerald-500/20 bg-emerald-500/10" 
-                      : isActive 
-                      ? "border-cyan-500/20 bg-cyan-500/10" 
-                      : "border-slate-800 bg-slate-950"
-                  }`}>
+                  <div
+                    className={`flex h-6 w-6 items-center justify-center rounded-lg border text-xs font-semibold ${
+                      isDone
+                        ? "border-emerald-500/20 bg-emerald-500/10"
+                        : isActive
+                          ? "border-cyan-500/20 bg-cyan-500/10"
+                          : "border-slate-800 bg-slate-950"
+                    }`}
+                  >
                     {isDone ? "✓" : idx + 1}
                   </div>
                   <StepIcon className="h-4.5 w-4.5" />

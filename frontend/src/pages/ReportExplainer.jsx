@@ -18,9 +18,9 @@ import {
   HelpCircle,
   Loader2,
 } from "lucide-react";
+import API_BASE_URL from "../config/api";
 
-const API_URL = "http://localhost:5000/api/reports";
-
+const API_URL = `${API_BASE_URL}/api/reports`;
 const ReportExplainer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
