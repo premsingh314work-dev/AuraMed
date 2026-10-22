@@ -5,18 +5,18 @@ const ParameterSchema = new mongoose.Schema({
   value: { type: mongoose.Schema.Types.Mixed }, // Can be number or string
   unit: { type: String, default: "" },
   reference_range: { type: String, default: "" },
-  status: { 
-    type: String, 
-    enum: ["normal", "high", "low", "warning"], 
-    default: "normal" 
+  status: {
+    type: String,
+    enum: ["normal", "high", "low", "warning", "unknown"],
+    default: "normal",
   },
-  explanation: { type: String, default: "" }
+  explanation: { type: String, default: "" },
 });
 
 const ChatMessageSchema = new mongoose.Schema({
   role: { type: String, enum: ["user", "assistant"], required: true },
   content: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now }
+  timestamp: { type: Date, default: Date.now },
 });
 
 const ReportSchema = new mongoose.Schema(
@@ -25,33 +25,33 @@ const ReportSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true
+      index: true,
     },
     fileName: {
       type: String,
-      required: true
+      required: true,
     },
     patientName: {
       type: String,
-      default: "Patient"
+      default: "Patient",
     },
     reportDate: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     summary: {
       type: String,
-      default: ""
+      default: "",
     },
     parameters: [ParameterSchema],
     lifestyleRecommendations: [{ type: String }],
     rawText: {
       type: String,
-      default: ""
+      default: "",
     },
-    chatHistory: [ChatMessageSchema]
+    chatHistory: [ChatMessageSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Report", ReportSchema);
