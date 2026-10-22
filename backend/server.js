@@ -6,7 +6,7 @@ const cors = require("cors");
 dotenv.config();
 
 const app = express();
-
+app.set("trust proxy", 1);
 // Trust proxy only when your deployment architecture requires it.
 // Configure this correctly for your hosting provider before enabling it.
 const PORT = Number(process.env.PORT) || 5000;
